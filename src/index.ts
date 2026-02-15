@@ -1,5 +1,12 @@
+const PROXY_PORT = 3000;
+const PROXY_DOMAIN = "proxy_test";
+
+const proxyDomainRoutes = new Map<string, string>([
+    ["teste", "http://172.16.1.105:3000"],
+]);
+
 const BACKEND_SERVERS = [
-    "http://172.16.1.105:3000"
+    "http://172.16.1.105:3000",
 ];
 
 let currentServer = 0;
@@ -21,7 +28,7 @@ function getNextServer() {
  * @return {Promise<Response>} A promise that resolves to the response object.
  */
 Bun.serve({
-  port: 3000,
+  port: PROXY_PORT,
   async fetch(req) {
     const url = new URL(req.url);
     const targetServer = getNextServer();
