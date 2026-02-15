@@ -30,6 +30,9 @@ function getNextServer() {
 Bun.serve({
   port: PROXY_PORT,
   async fetch(req) {
+    console.log("Request:", req.url);
+    console.log("Request headers:", req.headers);
+
     const url = new URL(req.url);
     const targetServer = getNextServer();
     const targetUrl = targetServer + url.pathname + url.search;
