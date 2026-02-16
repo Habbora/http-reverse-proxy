@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "name": "Backend",
+      "path": "apps/http-proxy-reverse"
+    },
+    {
+      "name": "Frontend",
+      "path": "apps/web-app"
+    }
+  ],
+  "settings": {}
+}
