@@ -27,9 +27,9 @@ function requireString(name: string, fallback?: string): string {
 
 function loadEnv(): Env {
   return {
-    PROXY_PORT: requireNumber("PROXY_PORT", 3000),
+    PROXY_PORT: requireNumber("PROXY_PORT", 4000),
     PROXY_DOMAIN: requireString("PROXY_DOMAIN", ""),
-    API_PORT: requireNumber("API_PORT", 4000),
+    API_PORT: requireNumber("API_PORT", 4001),
     DB_FILE_NAME: requireString("DB_FILE_NAME"),
   };
 }
