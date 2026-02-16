@@ -20,7 +20,5 @@ coverage
 
 bun.lockb
 
-drizzle/
 *.sqlite
 *.db
-
