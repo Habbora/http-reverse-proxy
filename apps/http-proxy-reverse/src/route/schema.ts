@@ -10,3 +10,4 @@ export type CreateRoute = z.infer<typeof CreateRouteSchema>
 
 export const UpdateRouteSchema = CreateRouteSchema.partial()
 export type UpdateRoute = z.infer<typeof UpdateRouteSchema>
+

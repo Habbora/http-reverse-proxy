@@ -1,1 +1,0 @@
-ALTER TABLE `proxy_routes_table` DROP COLUMN `port`;
