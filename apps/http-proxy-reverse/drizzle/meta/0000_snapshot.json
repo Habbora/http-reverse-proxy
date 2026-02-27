@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f070f4d6-3cf6-404f-8593-eae4777e078d",
+  "id": "ba9ddc03-3bb6-434e-9dc5-53cfc754971c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "proxy_routes_table": {
@@ -14,33 +14,34 @@
           "notNull": true,
           "autoincrement": false
         },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "url": {
-          "name": "url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "port": {
-          "name": "port",
+        "is_active": {
+          "name": "is_active",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "proxy_name": {
+          "name": "proxy_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "target_url": {
+          "name": "target_url",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         }
       },
       "indexes": {
-        "proxy_routes_table_name_unique": {
-          "name": "proxy_routes_table_name_unique",
+        "proxy_routes_table_proxy_name_unique": {
+          "name": "proxy_routes_table_proxy_name_unique",
           "columns": [
-            "name"
+            "proxy_name"
           ],
           "isUnique": true
         }
