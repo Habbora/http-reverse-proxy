@@ -1,8 +1,8 @@
-import { proxyDomainRoutes, ProxyService } from "./service";
+import { proxyRoutesCache, ProxyService } from "./service";
 
 const matchProxySubDomain = (domain: string, proxyDomain?: string) => {
-    for (const [key, value] of proxyDomainRoutes) {
-        if (domain.includes(key)) return value;
+    for (const [key, value] of proxyRoutesCache) {
+        if (domain.includes(key)) return value.targetUrl;
     }
     return null;
 }

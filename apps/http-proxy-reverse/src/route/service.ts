@@ -1,62 +1,79 @@
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { proxyRoutesTable } from "../db/schema";
-import type { CreateRoute, UpdateRoute } from "./schema";
+import { UpdateRouteSchema, type CreateRoute, type ProxyRoute, type RouteResponse, type UpdateRoute } from "./schema";
+import { toDomainUrl } from "../utils/toDomainUrl";
 
-export const proxyDomainRoutes = new Map<string, URL>();
+export const proxyRoutesCache = new Map<string, ProxyRoute>();
 
 export const ProxyService = {
     loadProxyRoutes: async () => {
-        proxyDomainRoutes.clear();
-        const dbRoutes = await db.select().from(proxyRoutesTable);
-        dbRoutes.forEach((route) => {
-            proxyDomainRoutes.set(route.id, new URL(route.url || ""));
+        proxyRoutesCache.clear();
+        db.select().from(proxyRoutesTable).then((routesDb) => {
+            routesDb.forEach((route) => proxyRoutesCache.set(route.id, route))
         })
     },
-    listRoutes: async () => {
-        return await db.select().from(proxyRoutesTable);
+    toRouteResponse: (route: ProxyRoute): RouteResponse => {
+        const url = toDomainUrl(route.id, "http");
+        return {
+            id: route.id,
+            isActive: route.isActive,
+            proxyName: route.proxyName,
+            targetUrl: route.targetUrl,
+            proxyUrl: url,
+        }
     },
-    createRoute: async (createRoute: CreateRoute) => {
+    getRoutes: async (): Promise<RouteResponse[]> => {
+        const routes = await db.select().from(proxyRoutesTable);
+        return routes.map(ProxyService.toRouteResponse);
+    },
+    createRoute: async (createRoute: CreateRoute): Promise<RouteResponse> => {
         try {
-            new URL(createRoute.url || "");
+            new URL(createRoute.targetUrl || "");
         } catch (error) {
-            throw new Error("Invalid URL");
+            throw new Error("Invalid target URL");
         }
 
-        const dbRoute = await db.insert(proxyRoutesTable)
-            .values({ name: createRoute.name, url: createRoute.url })
+        const [dbRoute] = await db.insert(proxyRoutesTable)
+            .values({ proxyName: createRoute.proxyName, targetUrl: createRoute.targetUrl })
             .returning();
 
         await ProxyService.loadProxyRoutes();
 
-        return dbRoute[0];
+        return ProxyService.toRouteResponse(dbRoute!);
     },
-    updateRoute: async (id: string, updateRoute: UpdateRoute) => {
-        const existingRoute = proxyDomainRoutes.get(id);
-        if (!existingRoute) throw new Error("Route does not exist");
+    updateRoute: async (id: string, updateRoute: UpdateRoute): Promise<RouteResponse> => {
+        const existingRoute = proxyRoutesCache.get(id);
+        if (!existingRoute) throw new Error("Route does not exist")
+
+        const parsed = UpdateRouteSchema.safeParse(updateRoute);
 
         try {
-            const checkUrl = new URL(updateRoute.url || "");
+            if (parsed.success && parsed.data.targetUrl) {
+                new URL(parsed.data.targetUrl || "");
+            }
         } catch (error) {
-            throw new Error("Invalid URL");
+            throw new Error("Invalid target URL");
         }
         
-        const dbRoute = await db.update(proxyRoutesTable)
-            .set({ name: updateRoute.name, url: updateRoute.url })
+        if (!parsed.success) throw new Error("Invalid update route");
+
+        const [dbRoute] = await db.update(proxyRoutesTable)
+            .set(parsed.data)
             .where(eq(proxyRoutesTable.id, id))
             .returning();
 
         await ProxyService.loadProxyRoutes();
 
-        return dbRoute[0];
+        return ProxyService.toRouteResponse(dbRoute!);
     },
     deleteRoute: async (id: string) => {
-        const dbRoute = await db.delete(proxyRoutesTable)
+        const [dbRoute] = await db.delete(proxyRoutesTable)
             .where(eq(proxyRoutesTable.id, id))
             .returning();
 
         await ProxyService.loadProxyRoutes();
 
-        return dbRoute[0];
+        return ProxyService.toRouteResponse(dbRoute!);
     },
 }

@@ -1,33 +1,7 @@
+import { CreateProxyRouteInput, ProxyApiError, ProxyErrorLike, ProxyRoute, UpdateProxyRouteInput } from "./types";
+
 const PROXY_API_URL =
   process.env.PROXY_API_URL || "http://localhost:4001";
-
-export type ProxyRoute = {
-  id: string;
-  name: string;
-  url: string;
-};
-
-type CreateProxyRouteInput = {
-  name: string;
-  url: string;
-};
-
-type UpdateProxyRouteInput = {
-  isActive?: 0 | 1;
-  name?: string;
-  url?: string;
-};
-
-interface ProxyApiError extends Error {
-  status?: number;
-  details?: string;
-}
-
-export type ProxyErrorLike = {
-  status?: number;
-  details?: unknown;
-  message?: string;
-};
 
 async function callProxyApi(path: string, init?: RequestInit) {
   const response = await fetch(`${PROXY_API_URL}${path}`, {
@@ -53,15 +27,16 @@ async function callProxyApi(path: string, init?: RequestInit) {
 
 export async function listProxyRoutes(): Promise<ProxyRoute[]> {
   const res = await callProxyApi("/route");
-  return res.json();
+  return ProxyRoute.array().parse(await res.json());
 }
 
 export async function createProxyRoute(
   input: CreateProxyRouteInput,
 ): Promise<ProxyRoute> {
+  const parsedInput = CreateProxyRouteInput.parse(input);
   const res = await callProxyApi("/route", {
     method: "POST",
-    body: JSON.stringify(input),
+    body: JSON.stringify(parsedInput),
   });
   return res.json();
 }
@@ -70,9 +45,10 @@ export async function updateProxyRoute(
   id: string,
   input: UpdateProxyRouteInput,
 ): Promise<ProxyRoute> {
+  const parsedInput = UpdateProxyRouteInput.parse(input);
   return callProxyApi(`/route/${id}`, {
     method: "PUT",
-    body: JSON.stringify(input),
+    body: JSON.stringify(parsedInput),
   }).then((res) => res.json())
     .catch((error: ProxyApiError) => getProxyErrorInfo(error));
 }
@@ -99,5 +75,4 @@ export function getProxyErrorInfo(
   }
   return { status: 500, details: String(error) };
 }
-
 
