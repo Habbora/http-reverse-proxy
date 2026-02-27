@@ -35,7 +35,6 @@ COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
 
 # Create data directory for sqlite
 RUN mkdir -p /data
-ENV DB_FILE_NAME=/data/db.sqlite
 VOLUME ["/data"]
 
 USER bun
