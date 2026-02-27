@@ -6,6 +6,8 @@ import {
   deleteRouteAction,
 } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 const SYSTEM_DOMAIN = "proxy.localhost:4000";
 
 export default async function Page() {
