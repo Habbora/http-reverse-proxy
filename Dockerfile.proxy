@@ -1,0 +1,46 @@
+# syntax=docker/dockerfile:1
+FROM oven/bun:1 AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app
+
+# Copy only the necessary files for install from the proxy app
+COPY apps/proxy/package.json apps/proxy/bun.lock* ./
+
+# Install dependencies
+RUN bun install --frozen-lockfile
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY apps/proxy .
+
+# Production image
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy necessary files
+# We need node_modules for runtime dependencies
+COPY --from=builder /app/node_modules ./node_modules
+# Copy source code
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/package.json ./package.json
+# Copy drizzle migrations if needed
+COPY --from=builder /app/drizzle ./drizzle
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+
+# Create data directory for sqlite
+RUN mkdir -p /data
+ENV DB_FILE_NAME=/data/db.sqlite
+VOLUME ["/data"]
+
+USER bun
+
+EXPOSE 4000
+EXPOSE 4001
+
+CMD ["bun", "src/index.ts"]

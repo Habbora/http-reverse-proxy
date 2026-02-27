@@ -1,5 +1,5 @@
 {
-  "name": "http-reverse-proxy",
+  "name": "proxy",
   "module": "src/index.ts",
   "type": "module",
   "private": true,

@@ -1,15 +1,16 @@
 {
   "folders": [
     {
+      "name": "Root",
       "path": "."
     },
     {
-      "name": "Backend",
-      "path": "apps/http-proxy-reverse"
+      "name": "Dashboard",
+      "path": "apps/dashboard"
     },
     {
-      "name": "Frontend",
-      "path": "apps/web-app"
+      "name": "Proxy",
+      "path": "apps/proxy"
     }
   ],
   "settings": {}
