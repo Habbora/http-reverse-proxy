@@ -14,7 +14,6 @@ type Endpoint = {
 }
 
 type Props = {
-  systemDomain: string;
   initialEndpoints: Endpoint[];
   createRouteAction: (formData: FormData) => Promise<Endpoint>;
   updateRouteAction: (id: string, formData: FormData) => Promise<Endpoint>;

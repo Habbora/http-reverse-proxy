@@ -75,4 +75,3 @@ export function getProxyErrorInfo(
   }
   return { status: 500, details: String(error) };
 }
-
