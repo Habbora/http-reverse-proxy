@@ -4,19 +4,27 @@ import { z } from "zod";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
-// Usando a sintaxe mais direta do Zod conforme seu feedback
 const LoginSchema = z.object({
-  email: z.email("E-mail inválido"),
+  email: z.string().email("E-mail inválido"),
   password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
 });
 
-export async function loginAction(prevState: any, formData: FormData) {
-  const data = Object.fromEntries(formData.entries());
-  const parsed = LoginSchema.safeParse(data);
+export type ActionState = {
+  error?: {
+    email?: string[];
+    password?: string[];
+    _form?: string[];
+  };
+} | null;
 
-  if (!parsed.success) {
+export async function loginAction(prevState: ActionState, formData: FormData): Promise<ActionState> {
+  const data = Object.fromEntries(formData.entries());
+  
+  const validatedFields = LoginSchema.safeParse(data);
+
+  if (!validatedFields.success) {
     return {
-      error: z.treeifyError(parsed.error),
+      error: validatedFields.error.flatten().fieldErrors,
     };
   }
 
@@ -24,8 +32,8 @@ export async function loginAction(prevState: any, formData: FormData) {
   const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 
   if (
-    parsed.data.email === ADMIN_EMAIL &&
-    parsed.data.password === ADMIN_PASSWORD
+    validatedFields.data.email === ADMIN_EMAIL &&
+    validatedFields.data.password === ADMIN_PASSWORD
   ) {
     const cookieStore = await cookies();
     cookieStore.set("auth_session", "session_token_123", {

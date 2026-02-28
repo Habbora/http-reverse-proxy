@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useActionState, startTransition } from "react";
-import { loginAction } from "./actions";
+import { loginAction, type ActionState } from "./actions";
 
 export default function LoginPage() {
-  const [state, action, isPending] = useActionState(loginAction, null);
+  const [state, action, isPending] = useActionState<ActionState, FormData>(loginAction, null);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
