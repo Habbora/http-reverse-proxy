@@ -1,11 +1,16 @@
-import { ENV } from "./env";
-import { startApiServer } from "./server";
-import { startProxyServer } from "./route";
-import { runMigrations } from "./db/migrate";
+import { ENV } from "./core/config/env";
+import { startApiServer } from "./core/server/server";
+import { runMigrations } from "./core/database/migrate";
+import { workerRegistry } from "./core/worker/registry";
+
+// Imports to register workers
+import "./modules/proxy/workers/proxy.manager";
 
 await runMigrations();
 
-const { API_PORT, PROXY_PORT, PROXY_DOMAIN } = ENV;
+const { API_PORT } = ENV;
 
 startApiServer(API_PORT);
-startProxyServer(PROXY_PORT, PROXY_DOMAIN);
+
+// Start all registered workers
+await workerRegistry.startAll();

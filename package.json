@@ -1,0 +1,17 @@
+{
+  "name": "http-reverse-proxy-monorepo",
+  "private": true,
+  "packageManager": "bun@1.3.10",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "start": "turbo start",
+    "lint": "turbo lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.2"
+  }
+}
