@@ -1,12 +1,12 @@
 "use server";
 
-import { refresh, revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache";
 import {
   createProxyRoute,
   deleteProxyRoute,
   listProxyRoutes,
   updateProxyRoute,
-} from "@/lib/proxy/service";
+} from "@/lib/proxy/proxy.service";
 import { CreateProxyRouteInput, UpdateProxyRouteInput } from "@/lib/proxy/types";
 
 export async function listRoutesAction() {

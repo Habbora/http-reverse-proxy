@@ -1,17 +1,18 @@
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { proxyRoutesTable } from "../db/schema";
-import { UpdateRouteSchema, type CreateRoute, type ProxyRoute, type RouteResponse, type UpdateRoute } from "./schema";
-import { toDomainUrl } from "../utils/toDomainUrl";
+import { db } from "../../core/database/client";
+import { proxyRoutesTable } from "../../core/database/schema";
+import { UpdateRouteSchema, type CreateRoute, type ProxyRoute, type RouteResponse, type UpdateRoute } from "./proxy.schema";
+import { notifyWorkerRoutesUpdated } from "./workers/proxy.manager";
+import { toDomainUrl } from "../../shared/utils/toDomainUrl";
 
 export const proxyRoutesCache = new Map<string, ProxyRoute>();
 
 export const ProxyService = {
     loadProxyRoutes: async () => {
         proxyRoutesCache.clear();
-        db.select().from(proxyRoutesTable).then((routesDb) => {
-            routesDb.forEach((route) => proxyRoutesCache.set(route.id, route))
-        })
+        const routesDb = await db.select().from(proxyRoutesTable);
+        routesDb.forEach((route) => proxyRoutesCache.set(route.id, route));
+        notifyWorkerRoutesUpdated(Array.from(proxyRoutesCache.values()));
     },
     toRouteResponse: (route: ProxyRoute): RouteResponse => {
         const url = toDomainUrl(route.id, "http");
@@ -43,9 +44,6 @@ export const ProxyService = {
         return ProxyService.toRouteResponse(dbRoute!);
     },
     updateRoute: async (id: string, updateRoute: UpdateRoute): Promise<RouteResponse> => {
-        const existingRoute = proxyRoutesCache.get(id);
-        if (!existingRoute) throw new Error("Route does not exist")
-
         const parsed = UpdateRouteSchema.safeParse(updateRoute);
 
         try {

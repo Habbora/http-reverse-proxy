@@ -1,10 +1,10 @@
 import Elysia from "elysia";
-import { CreateRouteSchema, UpdateRouteSchema } from "./schema";
-import { ProxyService } from "./service";
+import { CreateRouteSchema, UpdateRouteSchema } from "./proxy.schema";
+import { ProxyService } from "./proxy.service";
 
 export const routeRoute = new Elysia
     ({
-        prefix: "/route",
+        prefix: "/proxy",
     })
     .get("/", async () => {
         return await ProxyService.getRoutes();

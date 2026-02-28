@@ -1,6 +1,6 @@
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { proxyRoutesTable } from "../db/schema";
+import { proxyRoutesTable } from "../../core/database/schema";
 
 export const RouteSchema = createSelectSchema(proxyRoutesTable);
 export type ProxyRoute = z.infer<typeof RouteSchema>
