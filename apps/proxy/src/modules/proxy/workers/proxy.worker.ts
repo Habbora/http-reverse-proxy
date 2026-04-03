@@ -13,7 +13,7 @@ type InitPayload = {
 const matchProxySubDomain = (domain: string) => {
     // Current logic: check if domain includes the route key (id)
     // Example: if route.id is "app", and domain is "app.localhost", it matches.
-    console.log(`Domain ${proxyRoutesCache}`);
+    console.log(proxyRoutesCache);
     for (const [key, value] of proxyRoutesCache) {
         if (domain.includes(key)) return value.targetUrl;
     }
@@ -54,6 +54,7 @@ function sanitizeResponseHeaders(headers: Headers) {
 }
 
 const startProxyServer = (port: number, proxyDomain?: string) => {
+
     if (server) {
         postMessage({ type: 'LOG', message: "Proxy server already running" });
         return;
@@ -122,12 +123,15 @@ const startProxyServer = (port: number, proxyDomain?: string) => {
 self.onmessage = (event: MessageEvent) => {
     const { type, payload } = event.data;
 
-    console.log(`Received message: ${type}, ${payload}`);
+    console.log(`Received message: ${type}, ${JSON.stringify(payload)}`);
 
     switch (type) {
         case "INIT":
             const { port, proxyDomain } = payload as InitPayload;
             startProxyServer(port, proxyDomain);
+            proxyRoutesCache.forEach((route) => {
+                console.log(route);
+            });
             break;
         
         case "UPDATE_ROUTES":
