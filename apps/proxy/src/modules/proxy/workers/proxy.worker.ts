@@ -129,9 +129,6 @@ self.onmessage = (event: MessageEvent) => {
         case "INIT":
             const { port, proxyDomain } = payload as InitPayload;
             startProxyServer(port, proxyDomain);
-            proxyRoutesCache.forEach((route) => {
-                console.log(route);
-            });
             break;
         
         case "UPDATE_ROUTES":

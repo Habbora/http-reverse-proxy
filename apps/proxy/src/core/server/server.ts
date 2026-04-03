@@ -8,6 +8,5 @@ const app = new Elysia()
 
 export const startApiServer = (port: number) => {
     app.listen(port);
-
     console.log(`Elysia API server started on port ${port}`);
 }
