@@ -65,6 +65,10 @@ const startProxyServer = (port: number, proxyDomain?: string) => {
             // Use AbortController for timeout management
             const controller = new AbortController();
 
+            console.log(url.hostname);
+            console.log(url.pathname);
+            console.log(url.search);
+
             const targetServer = matchProxySubDomain(url.hostname, proxyDomain);
             if (!targetServer) {
                 // No route found
