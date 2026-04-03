@@ -83,6 +83,7 @@ const startProxyServer = (port: number, proxyDomain?: string) => {
                     body: req.body,
                     signal: controller.signal,
                     redirect: "manual",
+                    decompress: false,
                 });
 
                 clearTimeout(timeoutId);
