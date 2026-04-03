@@ -38,6 +38,8 @@ function sanitizeRequestHeaders(headers: Headers) {
     cleaned.set("x-forwarded-proto", "http");
     cleaned.set("x-forwarded-host", headers.get("host") || "");
 
+    cleaned.set("accept-encoding", "identity");
+
     return cleaned;
 }
 
@@ -49,6 +51,7 @@ function sanitizeResponseHeaders(headers: Headers) {
 
     cleaned.delete("content-length"); // Bun recalculates
     cleaned.delete("transfer-encoding"); // Bun decides
+    cleaned.delete("content-encoding");
 
     return cleaned;
 }
