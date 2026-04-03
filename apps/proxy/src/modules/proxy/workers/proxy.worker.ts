@@ -65,10 +65,6 @@ const startProxyServer = (port: number, proxyDomain?: string) => {
             // Use AbortController for timeout management
             const controller = new AbortController();
 
-            console.log(url.hostname);
-            console.log(url.pathname);
-            console.log(url.search);
-
             const targetServer = matchProxySubDomain(url.hostname, proxyDomain);
             if (!targetServer) {
                 // No route found
@@ -79,6 +75,8 @@ const startProxyServer = (port: number, proxyDomain?: string) => {
             
             // 30s timeout
             const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+            console.log(`Request from ${req.url} to ${targetUrl}`);
 
             try {
                 const response = await fetch(targetUrl, {
