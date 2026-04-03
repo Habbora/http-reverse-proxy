@@ -10,9 +10,10 @@ type InitPayload = {
     proxyDomain?: string;
 };
 
-const matchProxySubDomain = (domain: string, proxyDomain?: string) => {
+const matchProxySubDomain = (domain: string) => {
     // Current logic: check if domain includes the route key (id)
     // Example: if route.id is "app", and domain is "app.localhost", it matches.
+    console.log(`Domain ${domain}`);
     for (const [key, value] of proxyRoutesCache) {
         if (domain.includes(key)) return value.targetUrl;
     }
@@ -68,10 +69,10 @@ const startProxyServer = (port: number, proxyDomain?: string) => {
             console.log(`Request from ${req.url}`);
             console.log(`Request domain ${proxyDomain}`);
 
-            const targetServer = matchProxySubDomain(url.hostname, proxyDomain);
+            const targetServer = matchProxySubDomain(url.hostname);
 
             console.log(`Target server ${targetServer}`);
-            
+
             if (!targetServer) {
                 // No route found
                 return new Response("Not Found", { status: 404 });
