@@ -5,6 +5,7 @@ import { workerRegistry } from "./core/worker/registry";
 
 // Imports to register workers
 import "./modules/proxy/workers/proxy.manager";
+import { ProxyService } from "./modules/proxy/proxy.service";
 
 await runMigrations();
 
@@ -14,3 +15,5 @@ startApiServer(API_PORT);
 
 // Start all registered workers
 await workerRegistry.startAll();
+
+await ProxyService.loadProxyRoutes();

@@ -1,7 +1,6 @@
 import { ENV } from "../../../core/config/env";
 import { workerRegistry } from "../../../core/worker/registry";
 import { type ProxyRoute } from "../proxy.schema";
-import { proxyRoutesCache } from "../proxy.service";
 
 let proxyWorker: Worker | null = null;
 
@@ -51,8 +50,6 @@ export const notifyWorkerRoutesUpdated = (routes: ProxyRoute[]) => {
         payload: routes
     });
 };
-
-console.log(proxyRoutesCache);
 
 // Register the worker
 workerRegistry.register("ProxyWorker", startProxyWorker);
