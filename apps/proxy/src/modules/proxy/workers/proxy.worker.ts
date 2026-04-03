@@ -122,6 +122,8 @@ const startProxyServer = (port: number, proxyDomain?: string) => {
 self.onmessage = (event: MessageEvent) => {
     const { type, payload } = event.data;
 
+    console.log(`Received message: ${type}, ${payload}`);
+
     switch (type) {
         case "INIT":
             const { port, proxyDomain } = payload as InitPayload;
