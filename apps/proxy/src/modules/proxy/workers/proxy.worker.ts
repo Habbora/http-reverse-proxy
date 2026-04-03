@@ -13,7 +13,7 @@ type InitPayload = {
 const matchProxySubDomain = (domain: string) => {
     // Current logic: check if domain includes the route key (id)
     // Example: if route.id is "app", and domain is "app.localhost", it matches.
-    console.log(`Domain ${domain}`);
+    console.log(`Domain ${proxyRoutesCache}`);
     for (const [key, value] of proxyRoutesCache) {
         if (domain.includes(key)) return value.targetUrl;
     }
