@@ -5,12 +5,14 @@ import { workerRegistry } from "./core/worker/registry";
 
 // Imports to register workers
 import { startProxyServer } from "./modules/proxy/proxy.server";
+import { ProxyService } from "./modules/proxy/proxy.service";
 
 await runMigrations();
 
-const { API_PORT } = ENV;
+const { API_PORT, PROXY_DOMAIN, PROXY_PORT } = ENV;
 
 startApiServer(API_PORT);
 
+
 // Start the proxy server
-await startProxyServer(API_PORT);
+await startProxyServer(PROXY_PORT, PROXY_DOMAIN);

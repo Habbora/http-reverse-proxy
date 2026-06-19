@@ -14,8 +14,12 @@ export class ProxyService {
         routesDb.forEach((route) => proxyRoutesCache.set(route.id, route));
     }
 
-    static resolveTargetProxy(domain: string): ProxyRoute | undefined {
-        return proxyRoutesCache.get(domain);
+    static resolveTargetProxy(hostname: string): ProxyRoute | undefined {
+        for (const [id, route] of proxyRoutesCache) {
+            if (!route.isActive) continue;
+            if (hostname.includes(id)) return route;
+        }
+        return undefined;
     }
 
     static toRouteResponse(route: ProxyRoute): RouteResponse {

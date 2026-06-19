@@ -76,7 +76,7 @@ export class ProxyServer {
                     if (error.name === "AbortError") {
                         return new Response("Gateway Timeout", { status: 504 });
                     }
-                    
+
                     return new Response("Internal Server Error", { status: 500 });
                 }
             }
@@ -89,6 +89,7 @@ export class ProxyServer {
 }
 
 export const startProxyServer = async (port: number, proxyDomain?: string) => {
+    await ProxyService.loadProxyRoutes();
     const proxyServer = new ProxyServer(port, proxyDomain);
     return proxyServer;
 }
