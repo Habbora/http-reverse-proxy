@@ -13,5 +13,7 @@
       "path": "apps/proxy"
     }
   ],
-  "settings": {}
+  "settings": {
+    "typescript.tsdk": "Proxy\\node_modules\\typescript\\lib"
+  }
 }
